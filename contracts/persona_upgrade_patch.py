@@ -30,6 +30,14 @@ class PersonaFieldPatch(BaseModel):
         return self
 
 
+class TierContext(BaseModel):
+    """Optional context for tier-related patches (promotions/demotions)."""
+    from_mode: str = "persona"  # persona | agent
+    to_mode: str = "agent"  # persona | agent
+    graduation_gates: dict[str, bool] = Field(default_factory=dict)
+    promotion_reason: str = ""
+
+
 class PersonaUpgradePatch(BaseModel):
     """Patch describing changes to a persona definition.
 
@@ -46,4 +54,5 @@ class PersonaUpgradePatch(BaseModel):
     to_version: str = "0.1.0"
     schema_valid: bool = True
     status: str = "proposed"  # proposed | applied | rejected
+    tier_context: TierContext | None = None  # Present for tier promotion/demotion patches
     emitted_at: datetime = Field(default_factory=datetime.now)

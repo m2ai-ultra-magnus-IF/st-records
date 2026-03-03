@@ -20,6 +20,8 @@ class RecommendationType(str, Enum):
     CONSTRAINT_REMOVAL = "constraint_removal"
     CLAUDE_MD_UPDATE = "claude_md_update"
     PIPELINE_CHANGE = "pipeline_change"
+    TIER_PROMOTION = "tier_promotion"
+    TIER_DEMOTION = "tier_demotion"
     OTHER = "other"
 
 
