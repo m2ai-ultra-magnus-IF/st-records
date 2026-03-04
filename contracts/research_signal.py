@@ -16,6 +16,7 @@ class SignalSource(str, Enum):
     TOOL_MONITOR = "tool_monitor"
     DOMAIN_WATCH = "domain_watch"
     IDEA_MACHINE = "idea_machine"
+    YOUTUBE_SCANNER = "youtube_scanner"
 
 
 class SignalRelevance(str, Enum):

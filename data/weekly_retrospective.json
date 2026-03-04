@@ -1,0 +1,47 @@
+{
+  "generated_at": "2026-03-01T20:00:01.858407",
+  "period": {
+    "start": "2026-02-22",
+    "end": "2026-03-01"
+  },
+  "starscream": {
+    "posts": 0,
+    "total_likes": 0,
+    "total_comments": 0,
+    "total_impressions": 0,
+    "avg_engagement": 0.0,
+    "follower_delta": 0,
+    "top_post": null
+  },
+  "metroplex": {
+    "cycles": 8974,
+    "triage_approved": 0,
+    "triage_rejected": 0,
+    "builds_completed": 12,
+    "builds_failed": 8,
+    "patches_applied": 0,
+    "patches_skipped": 3412
+  },
+  "ideaforge": {
+    "signals_ingested": 49,
+    "ideas_created": 29
+  },
+  "st_factory": {
+    "recs_pending": 8,
+    "recs_applied": 0,
+    "patches_proposed": 0,
+    "patches_applied": 0
+  },
+  "git_velocity": {
+    "claudeclaw": 20,
+    "ultra-magnus": 0,
+    "yce-harness": 3,
+    "metroplex": 10,
+    "ideaforge": 2,
+    "research-agents": 2,
+    "st-factory": 5,
+    "perceptor": 11,
+    "sky-lynx": 2,
+    "gen-ui-dashboard": 0
+  }
+}
