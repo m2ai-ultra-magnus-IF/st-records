@@ -78,9 +78,28 @@ class ContractStore:
                 target_department TEXT,
                 status TEXT DEFAULT 'pending',
                 emitted_at TEXT NOT NULL,
-                raw_json TEXT NOT NULL
+                raw_json TEXT NOT NULL,
+                effectiveness TEXT,
+                effectiveness_score REAL,
+                effectiveness_evaluated_at TEXT
             );
 
+            -- Migration: add effectiveness columns if missing
+        """)
+        # Safe column additions (SQLite ignores if column already exists via try/except)
+        for col, col_type in [
+            ("effectiveness", "TEXT"),
+            ("effectiveness_score", "REAL"),
+            ("effectiveness_evaluated_at", "TEXT"),
+        ]:
+            try:
+                conn.execute(
+                    f"ALTER TABLE improvement_recommendations ADD COLUMN {col} {col_type}"
+                )
+            except sqlite3.OperationalError:
+                pass  # Column already exists
+
+        conn.executescript("""
             CREATE TABLE IF NOT EXISTS persona_patches (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 patch_id TEXT NOT NULL UNIQUE,
@@ -283,6 +302,61 @@ class ContractStore:
             (status, recommendation_id),
         )
         conn.commit()
+
+    def update_recommendation_effectiveness(
+        self,
+        recommendation_id: str,
+        effectiveness: str,
+        effectiveness_score: float,
+        evaluated_at: str,
+    ) -> None:
+        """Record effectiveness evaluation for a recommendation.
+
+        Args:
+            recommendation_id: The recommendation to update
+            effectiveness: 'effective', 'neutral', or 'harmful'
+            effectiveness_score: -1.0 to 1.0 (negative = harmful, positive = effective)
+            evaluated_at: ISO timestamp of evaluation
+        """
+        conn = self._get_conn()
+        conn.execute(
+            """UPDATE improvement_recommendations
+            SET effectiveness = ?, effectiveness_score = ?, effectiveness_evaluated_at = ?
+            WHERE recommendation_id = ?""",
+            (effectiveness, effectiveness_score, evaluated_at, recommendation_id),
+        )
+        conn.commit()
+
+    def get_applied_recommendations_for_evaluation(self) -> list[dict]:
+        """Get applied recommendations that haven't been evaluated for effectiveness yet.
+
+        Returns recommendations where status is 'applied' (auto-applied to CLAUDE.md)
+        and effectiveness is NULL.
+        """
+        conn = self._get_conn()
+        rows = conn.execute(
+            """SELECT recommendation_id, session_id, title, recommendation_type,
+                      target_system, priority, emitted_at, raw_json
+            FROM improvement_recommendations
+            WHERE status = 'applied' AND effectiveness IS NULL
+            ORDER BY emitted_at ASC""",
+        ).fetchall()
+        return [dict(row) for row in rows]
+
+    def get_effectiveness_summary(self) -> dict:
+        """Get summary of effectiveness evaluations for reporting.
+
+        Returns counts and averages by effectiveness category.
+        """
+        conn = self._get_conn()
+        rows = conn.execute(
+            """SELECT effectiveness, COUNT(*) as count,
+                      AVG(effectiveness_score) as avg_score
+            FROM improvement_recommendations
+            WHERE effectiveness IS NOT NULL
+            GROUP BY effectiveness"""
+        ).fetchall()
+        return {row["effectiveness"]: {"count": row["count"], "avg_score": row["avg_score"]} for row in rows}
 
     # --- PersonaUpgradePatch ---
 

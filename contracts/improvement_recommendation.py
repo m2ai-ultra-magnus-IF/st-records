@@ -61,7 +61,7 @@ class ImprovementRecommendation(BaseModel):
     impact: str = ""
     reversibility: str = "high"  # high | medium | low
     evidence: EvidenceBasis = Field(default_factory=EvidenceBasis)
-    status: str = "pending"  # pending | applied | rejected
+    status: str = "pending"  # pending | dispatched | applied | rejected
     emitted_at: datetime = Field(default_factory=datetime.now)
 
     @model_validator(mode="after")

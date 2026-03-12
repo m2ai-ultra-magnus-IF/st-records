@@ -17,6 +17,12 @@ class SignalSource(str, Enum):
     DOMAIN_WATCH = "domain_watch"
     IDEA_MACHINE = "idea_machine"
     YOUTUBE_SCANNER = "youtube_scanner"
+    RSS_SCANNER = "rss_scanner"
+    MANUAL = "manual"
+    TREND_ANALYZER = "trend_analyzer"
+    PERPLEXITY = "perplexity"
+    CHATGPT = "chatgpt"
+    GEMINI_RESEARCH = "gemini_research"
 
 
 class SignalRelevance(str, Enum):

@@ -1,47 +1,47 @@
 {
-  "generated_at": "2026-03-01T20:00:01.858407",
+  "generated_at": "2026-03-08T20:00:01.950262",
   "period": {
-    "start": "2026-02-22",
-    "end": "2026-03-01"
+    "start": "2026-03-01",
+    "end": "2026-03-08"
   },
   "starscream": {
-    "posts": 0,
-    "total_likes": 0,
+    "posts": 9,
+    "total_likes": 2,
     "total_comments": 0,
-    "total_impressions": 0,
-    "avg_engagement": 0.0,
+    "total_impressions": 167,
+    "avg_engagement": 2.98,
     "follower_delta": 0,
-    "top_post": null
+    "top_post": "The biggest lie in healthcare AI: \"We're starting with clini"
   },
   "metroplex": {
-    "cycles": 8974,
+    "cycles": 9981,
     "triage_approved": 0,
     "triage_rejected": 0,
-    "builds_completed": 12,
-    "builds_failed": 8,
+    "builds_completed": 11,
+    "builds_failed": 0,
     "patches_applied": 0,
-    "patches_skipped": 3412
+    "patches_skipped": 0
   },
   "ideaforge": {
-    "signals_ingested": 49,
-    "ideas_created": 29
+    "signals_ingested": 51,
+    "ideas_created": 36
   },
   "st_factory": {
-    "recs_pending": 8,
-    "recs_applied": 0,
+    "recs_pending": 0,
+    "recs_applied": 1,
     "patches_proposed": 0,
     "patches_applied": 0
   },
   "git_velocity": {
-    "claudeclaw": 20,
+    "claudeclaw": 11,
     "ultra-magnus": 0,
-    "yce-harness": 3,
-    "metroplex": 10,
-    "ideaforge": 2,
-    "research-agents": 2,
-    "st-factory": 5,
-    "perceptor": 11,
-    "sky-lynx": 2,
+    "yce-harness": 9,
+    "metroplex": 3,
+    "ideaforge": 1,
+    "research-agents": 1,
+    "st-factory": 2,
+    "perceptor": 3,
+    "sky-lynx": 1,
     "gen-ui-dashboard": 0
   }
 }
