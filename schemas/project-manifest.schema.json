@@ -1,0 +1,289 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://st-metro.local/schemas/project-manifest.schema.json",
+  "title": "ST Metro Project Manifest",
+  "description": "Agent-readable project manifest for L5 autonomous orchestration. Primary consumer: Data (ClaudeClaw Chief of Staff). Written by Sky-Lynx daily pulse, read by all ST Metro agents.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "name",
+    "display_name",
+    "status",
+    "purpose",
+    "owner",
+    "repo",
+    "tech_stack",
+    "dependencies",
+    "health",
+    "activity"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0.0",
+      "description": "Manifest schema version. Bump on breaking changes only."
+    },
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*$",
+      "description": "Machine-readable project identifier. Lowercase, hyphens only."
+    },
+    "display_name": {
+      "type": "string",
+      "description": "Human-readable project name."
+    },
+    "status": {
+      "type": "string",
+      "enum": ["active", "paused", "stale", "archived"],
+      "description": "Current project lifecycle state. 'stale' is set automatically when last_activity exceeds stale_threshold_days."
+    },
+    "purpose": {
+      "type": "string",
+      "minLength": 20,
+      "maxLength": 500,
+      "description": "1-3 sentence narrative explaining what this project does and why it exists. Replaces BLUEPRINT intro. Must be meaningful enough to generate a human briefing from."
+    },
+    "owner": {
+      "type": "string",
+      "description": "Primary human or agent responsible. e.g. 'matthew', 'metroplex', 'data'."
+    },
+    "repo": {
+      "type": "object",
+      "required": ["org", "name"],
+      "properties": {
+        "org": {
+          "type": "string",
+          "description": "GitHub organization. e.g. 'm2ai-portfolio', 'MatthewSnow2', 'earlyaidopters'."
+        },
+        "name": {
+          "type": "string",
+          "description": "GitHub repository name."
+        },
+        "default_branch": {
+          "type": "string",
+          "default": "main"
+        },
+        "visibility": {
+          "type": "string",
+          "enum": ["public", "private"]
+        }
+      },
+      "additionalProperties": false
+    },
+    "local_path": {
+      "type": "string",
+      "description": "Absolute path on ProBook. e.g. '/home/apexaipc/projects/claudeclaw'."
+    },
+    "tech_stack": {
+      "type": "object",
+      "required": ["languages", "frameworks"],
+      "properties": {
+        "languages": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Primary languages. e.g. ['typescript', 'python']."
+        },
+        "frameworks": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Key frameworks and libraries. e.g. ['grammy', 'claude-agent-sdk', 'hono']."
+        },
+        "databases": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Database systems used. e.g. ['sqlite', 'better-sqlite3']."
+        },
+        "runtime": {
+          "type": "string",
+          "description": "Runtime environment. e.g. 'node-22', 'python-3.11'."
+        }
+      },
+      "additionalProperties": false
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["project", "relationship"],
+        "properties": {
+          "project": {
+            "type": "string",
+            "description": "Name of the ST Metro project this depends on."
+          },
+          "relationship": {
+            "type": "string",
+            "enum": ["consumes", "produces", "orchestrates", "monitors", "extends"],
+            "description": "How this project relates to the dependency."
+          },
+          "description": {
+            "type": "string",
+            "description": "Brief explanation of the dependency."
+          }
+        },
+        "additionalProperties": false
+      },
+      "description": "Relationships to other ST Metro projects. Not npm/pip deps — ecosystem deps."
+    },
+    "health": {
+      "type": "object",
+      "required": ["score"],
+      "properties": {
+        "score": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Composite health score computed by Sky-Lynx. 0=dead, 100=perfect."
+        },
+        "factors": {
+          "type": "object",
+          "properties": {
+            "recency": { "type": "integer", "minimum": 0, "maximum": 100 },
+            "build_pass": { "type": "integer", "minimum": 0, "maximum": 100 },
+            "test_coverage": { "type": "integer", "minimum": 0, "maximum": 100 },
+            "dependency_freshness": { "type": "integer", "minimum": 0, "maximum": 100 }
+          },
+          "description": "Individual factor scores. Weights: recency 40%, build 30%, tests 20%, deps 10%.",
+          "additionalProperties": false
+        },
+        "last_computed": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When Sky-Lynx last computed this score."
+        }
+      },
+      "additionalProperties": false
+    },
+    "activity": {
+      "type": "object",
+      "required": ["last_commit"],
+      "properties": {
+        "last_commit": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of most recent non-auto-snapshot commit."
+        },
+        "last_build": {
+          "type": "object",
+          "properties": {
+            "date": { "type": "string", "format": "date-time" },
+            "passed": { "type": "boolean" },
+            "test_count": { "type": "integer" },
+            "coverage_pct": { "type": "number" }
+          },
+          "additionalProperties": false
+        },
+        "commits_30d": {
+          "type": "integer",
+          "description": "Number of meaningful commits in the last 30 days."
+        },
+        "stale_threshold_days": {
+          "type": "integer",
+          "default": 14,
+          "description": "Days without meaningful activity before status flips to 'stale'."
+        }
+      },
+      "additionalProperties": false
+    },
+    "nudge": {
+      "type": "object",
+      "properties": {
+        "last_nudge": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When Data last mentioned this project in a nudge."
+        },
+        "suppressed_until": {
+          "type": "string",
+          "format": "date-time",
+          "description": "If set, Data won't nudge about this project until this date. Set via /stop-nudge."
+        },
+        "history": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "date": { "type": "string", "format": "date-time" },
+              "message": { "type": "string" },
+              "acknowledged": { "type": "boolean" }
+            },
+            "additionalProperties": false
+          },
+          "maxItems": 10,
+          "description": "Recent nudge history. Capped at 10 entries, oldest dropped."
+        }
+      },
+      "additionalProperties": false
+    },
+    "extensions": {
+      "type": "object",
+      "description": "Typed extension blocks for agent-specific data. Each key is an extension type.",
+      "properties": {
+        "service": {
+          "type": "object",
+          "description": "For long-running services (ClaudeClaw, n8n).",
+          "properties": {
+            "process_manager": { "type": "string", "enum": ["pm2", "systemd", "portainer", "manual"] },
+            "endpoints": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "url": { "type": "string" },
+                  "type": { "type": "string", "enum": ["http", "telegram", "websocket", "grpc"] }
+                },
+                "additionalProperties": false
+              }
+            },
+            "host": { "type": "string", "description": "Where this runs. e.g. 'probook', 'nas', 'railway'." }
+          },
+          "additionalProperties": false
+        },
+        "pipeline": {
+          "type": "object",
+          "description": "For build/orchestration pipelines (Metroplex, yce-harness).",
+          "properties": {
+            "stages": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "current_stage": { "type": "string" },
+            "builds_total": { "type": "integer" },
+            "builds_passed": { "type": "integer" },
+            "last_failure_reason": { "type": "string" }
+          },
+          "additionalProperties": false
+        },
+        "analytics": {
+          "type": "object",
+          "description": "For measurement/analysis services (Sky-Lynx, st-factory).",
+          "properties": {
+            "data_sources": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "output_format": { "type": "string" },
+            "schedule": { "type": "string", "description": "Cron expression or human-readable schedule." }
+          },
+          "additionalProperties": false
+        },
+        "cron": {
+          "type": "object",
+          "description": "For scheduled/batch jobs (research-agents).",
+          "properties": {
+            "schedule": { "type": "string" },
+            "last_run": { "type": "string", "format": "date-time" },
+            "next_run": { "type": "string", "format": "date-time" },
+            "last_run_success": { "type": "boolean" }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": {
+        "type": "object",
+        "description": "Custom extension blocks. Use a descriptive key."
+      }
+    }
+  },
+  "additionalProperties": false
+}

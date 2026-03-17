@@ -1,0 +1,65 @@
+{
+  "schema_version": "1.0.0",
+  "name": "st-factory",
+  "display_name": "ST Factory",
+  "status": "active",
+  "purpose": "Contract store, persona metrics DB, and patch management for the Snow-Town feedback loop. Defines the Pydantic data contracts that all ST Metro services use to communicate, and hosts the schemas that validate inter-service messages.",
+  "owner": "matthew",
+  "repo": {
+    "org": "m2ai-portfolio",
+    "name": "st-factory",
+    "default_branch": "master",
+    "visibility": "private"
+  },
+  "local_path": "/home/apexaipc/projects/st-factory",
+  "tech_stack": {
+    "languages": [
+      "python"
+    ],
+    "frameworks": [
+      "pydantic",
+      "fastapi"
+    ],
+    "databases": [
+      "sqlite"
+    ],
+    "runtime": "python-3.11"
+  },
+  "dependencies": [],
+  "health": {
+    "score": 91,
+    "factors": {
+      "recency": 100,
+      "build_pass": 90,
+      "test_coverage": 80,
+      "dependency_freshness": 85
+    },
+    "last_computed": "2026-03-17T04:52:10.324649+00:00"
+  },
+  "activity": {
+    "last_commit": "2026-03-12T16:57:30-05:00",
+    "last_build": {
+      "date": "2026-03-09T00:00:00-05:00",
+      "passed": true,
+      "test_count": 0,
+      "coverage_pct": 0
+    },
+    "commits_30d": 11,
+    "stale_threshold_days": 21
+  },
+  "nudge": {
+    "last_nudge": null,
+    "suppressed_until": null,
+    "history": []
+  },
+  "extensions": {
+    "analytics": {
+      "data_sources": [
+        "data/persona_metrics.db",
+        "data/research_signals.db"
+      ],
+      "output_format": "jsonl",
+      "schedule": null
+    }
+  }
+}
