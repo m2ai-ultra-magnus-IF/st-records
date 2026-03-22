@@ -23,6 +23,9 @@ class SignalSource(str, Enum):
     PERPLEXITY = "perplexity"
     CHATGPT = "chatgpt"
     GEMINI_RESEARCH = "gemini_research"
+    GITHUB_TRENDING = "github_trending"
+    REDDIT = "reddit"
+    PRODUCT_HUNT = "product_hunt"
 
 
 class SignalRelevance(str, Enum):
