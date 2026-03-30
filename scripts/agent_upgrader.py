@@ -50,6 +50,17 @@ AGENTS_PATH = REGISTRY_PATH / "agents"
 # Claude model for patch generation
 PATCH_MODEL = "claude-sonnet-4-20250514"
 
+# Auto-approve criteria: high-confidence, low-risk agent patches
+# skip HIL review and go straight to "approved" for Gate 3 pickup
+AUTO_APPROVE_ALLOWED_TYPES = {
+    "constraint_addition",
+    "claude_md_update",
+    "framework_refinement",
+}
+
+# Operations that are inherently reversible (section add/replace can be reverted)
+AUTO_APPROVE_ALLOWED_OPS = {"add", "replace"}
+
 PATCH_PROMPT = """You are an agent configuration expert. Given a recommendation for improving
 a true AI agent and the agent's current CLAUDE.md, generate a minimal section-level patch.
 
@@ -204,6 +215,26 @@ def generate_agent_patch(
     )
 
 
+def _is_auto_approvable(rec, patch: AgentUpgradePatch) -> bool:
+    """Check whether an agent patch qualifies for auto-approval.
+
+    High-confidence: high priority + high reversibility + strong evidence.
+    Only safe operations (add/replace, not remove) qualify.
+    """
+    if rec.priority != "high":
+        return False
+    if rec.reversibility != "high":
+        return False
+    if rec.recommendation_type not in AUTO_APPROVE_ALLOWED_TYPES:
+        return False
+    if patch.operation not in AUTO_APPROVE_ALLOWED_OPS:
+        return False
+    # Require substantial evidence
+    if not rec.evidence or len(rec.evidence) < 40:
+        return False
+    return True
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Snow-Town Agent Upgrade Engine")
     parser.add_argument("--dry-run", action="store_true", help="Show what would be generated without calling Claude")
@@ -265,9 +296,15 @@ def main() -> int:
                     failed += 1
                     continue
 
-                # Write to store (always proposed, never auto-applied)
+                # Auto-approve high-confidence patches, else propose for HIL
+                if _is_auto_approvable(rec, patch):
+                    patch.status = "approved"
+                    logger.info(
+                        f"  Patch {patch.patch_id} AUTO-APPROVED for {agent_id} "
+                        f"(high priority + high reversibility + {patch.operation})"
+                    )
                 store.write_agent_patch(patch)
-                logger.info(f"  Patch {patch.patch_id} written for {agent_id} (status=proposed)")
+                logger.info(f"  Patch {patch.patch_id} written for {agent_id} (status={patch.status})")
                 processed += 1
 
             except Exception as e:
