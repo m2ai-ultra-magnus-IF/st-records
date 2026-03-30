@@ -36,7 +36,7 @@ class QualityValidation(BaseModel):
     confidence: float = Field(..., ge=0.0, le=1.0)
     confidence_override_applied: bool = False
     findings_count: int = 0
-    model_used: str = "gpt-4o"
+    model_used: str = "gpt-4.1"
     build_outcome: str | None = None
     routed_to: str = ""
     emitted_at: datetime = Field(default_factory=datetime.now)
