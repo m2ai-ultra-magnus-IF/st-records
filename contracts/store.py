@@ -12,6 +12,7 @@ from typing import TypeVar
 
 from pydantic import BaseModel
 
+from .agent_upgrade_patch import AgentUpgradePatch
 from .improvement_recommendation import ImprovementRecommendation
 from .outcome_record import OutcomeRecord
 from .persona_upgrade_patch import PersonaUpgradePatch
@@ -128,6 +129,19 @@ class ContractStore:
                 emitted_at TEXT NOT NULL,
                 raw_json TEXT NOT NULL
             );
+
+            CREATE TABLE IF NOT EXISTS agent_patches (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                patch_id TEXT NOT NULL UNIQUE,
+                agent_id TEXT NOT NULL,
+                target TEXT NOT NULL,
+                section TEXT NOT NULL,
+                operation TEXT NOT NULL,
+                rationale TEXT,
+                status TEXT DEFAULT 'proposed',
+                emitted_at TEXT NOT NULL,
+                raw_json TEXT NOT NULL
+            );
         """)
         conn.commit()
 
@@ -137,6 +151,7 @@ class ContractStore:
             "improvement_recommendation": self.data_dir / "improvement_recommendations.jsonl",
             "persona_patch": self.data_dir / "persona_patches.jsonl",
             "research_signal": self.data_dir / "research_signals.jsonl",
+            "agent_patch": self.data_dir / "agent_patches.jsonl",
         }
         return paths[contract_type]
 
@@ -440,6 +455,88 @@ class ContractStore:
         )
         conn.commit()
 
+    # --- AgentUpgradePatch ---
+
+    def _insert_agent_patch_sqlite(self, patch: AgentUpgradePatch) -> None:
+        """Insert an AgentUpgradePatch into SQLite only."""
+        conn = self._get_conn()
+        conn.execute(
+            """INSERT OR REPLACE INTO agent_patches
+            (patch_id, agent_id, target, section, operation,
+             rationale, status, emitted_at, raw_json)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+            (
+                patch.patch_id,
+                patch.agent_id,
+                patch.target,
+                patch.section,
+                patch.operation,
+                patch.rationale,
+                patch.status,
+                patch.emitted_at.isoformat(),
+                patch.model_dump_json(),
+            ),
+        )
+        conn.commit()
+
+    def write_agent_patch(self, patch: AgentUpgradePatch) -> None:
+        """Write an AgentUpgradePatch to JSONL and SQLite."""
+        self._append_jsonl("agent_patch", patch)
+        self._insert_agent_patch_sqlite(patch)
+
+    def read_agent_patches(self, limit: int = 100) -> list[AgentUpgradePatch]:
+        """Read AgentUpgradePatches from JSONL."""
+        path = self._jsonl_path("agent_patch")
+        if not path.exists():
+            return []
+        records = []
+        for line in path.read_text().strip().splitlines():
+            if line:
+                records.append(AgentUpgradePatch.model_validate_json(line))
+        return records[-limit:]
+
+    def query_agent_patches(
+        self,
+        agent_id: str | None = None,
+        status: str | None = None,
+        limit: int = 100,
+    ) -> list[AgentUpgradePatch]:
+        """Query AgentUpgradePatches from SQLite.
+
+        Overlays current SQLite status onto deserialized objects,
+        since raw_json retains the original write-time status.
+        """
+        conn = self._get_conn()
+        query = "SELECT raw_json, status AS current_status FROM agent_patches"
+        conditions: list[str] = []
+        params: list = []
+        if agent_id:
+            conditions.append("agent_id = ?")
+            params.append(agent_id)
+        if status:
+            conditions.append("status = ?")
+            params.append(status)
+        if conditions:
+            query += " WHERE " + " AND ".join(conditions)
+        query += " ORDER BY emitted_at DESC LIMIT ?"
+        params.append(limit)
+        rows = conn.execute(query, params).fetchall()
+        results = []
+        for row in rows:
+            patch = AgentUpgradePatch.model_validate_json(row["raw_json"])
+            patch.status = row["current_status"]
+            results.append(patch)
+        return results
+
+    def update_agent_patch_status(self, patch_id: str, status: str) -> None:
+        """Update the status of an agent patch in SQLite."""
+        conn = self._get_conn()
+        conn.execute(
+            "UPDATE agent_patches SET status = ? WHERE patch_id = ?",
+            (status, patch_id),
+        )
+        conn.commit()
+
     # --- ResearchSignal ---
 
     def _insert_signal_sqlite(self, signal: ResearchSignal) -> None:
@@ -547,6 +644,7 @@ class ContractStore:
             DROP TABLE IF EXISTS outcome_records;
             DROP TABLE IF EXISTS improvement_recommendations;
             DROP TABLE IF EXISTS persona_patches;
+            DROP TABLE IF EXISTS agent_patches;
             DROP TABLE IF EXISTS research_signals;
         """)
         self._ensure_tables()
@@ -559,6 +657,8 @@ class ContractStore:
             self._insert_patch_sqlite(patch)
         for signal in self.read_signals(limit=10000):
             self._insert_signal_sqlite(signal)
+        for agent_patch in self.read_agent_patches(limit=10000):
+            self._insert_agent_patch_sqlite(agent_patch)
 
     def close(self) -> None:
         """Close the SQLite connection."""
