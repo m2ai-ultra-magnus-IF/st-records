@@ -1,4 +1,4 @@
-# ST Factory (Snow-Town)
+# ST Records (Snow-Town)
 
 Closed-loop learning ecosystem for the ST Metro pipeline. Connects three autonomous systems into a feedback triangle: outcomes drive analysis, analysis produces recommendations, recommendations upgrade personas, upgraded personas improve future outcomes.
 
@@ -7,7 +7,7 @@ Closed-loop learning ecosystem for the ST Metro pipeline. Connects three autonom
 ```
 Ultra Magnus (idea pipeline)
     |
-    +-- OutcomeRecord --> ST Factory ContractStore (JSONL + SQLite)
+    +-- OutcomeRecord --> ST Records ContractStore (JSONL + SQLite)
                                |
                                v
                          Sky-Lynx (weekly analysis)
@@ -112,8 +112,8 @@ uvicorn api.main:app --reload --port 8000
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `SNOW_TOWN_DATA_DIR` | `~/projects/st-factory/data` | ContractStore data directory |
-| `ACADEMY_PERSONAS_DIR` | `~/projects/agent-persona-academy/personas` | Academy persona YAML directory |
+| `ST_RECORDS_DATA_DIR` | `~/projects/st-records/data` | ContractStore data directory |
+| `ACADEMY_PERSONAS_DIR` | `~/projects/st-agent-registry/personas` | Academy persona YAML directory |
 | `UM_DB_PATH` | `~/incoming/caught_ideas.db` | Ultra Magnus database path |
 
 ### Dashboard (Next.js 14)
@@ -135,20 +135,20 @@ npm run dev    # http://localhost:3000
 
 ## Cron / Automation
 
-Weekly feedback loop (Sundays 2 AM) via `/etc/cron.d/st-factory`:
+Weekly feedback loop (Sundays 2 AM) via `/etc/cron.d/st-records`:
 
 ```
-0 2 * * 0 apexaipc /home/apexaipc/projects/st-factory/scripts/run_loop.sh >> /var/log/st-factory/loop.log 2>&1
+0 2 * * 0 apexaipc /home/apexaipc/projects/st-records/scripts/run_loop.sh >> /var/log/st-records/loop.log 2>&1
 ```
 
-Logrotate configured at `cron/logrotate-st-factory`.
+Logrotate configured at `cron/logrotate-st-records`.
 
 **Note**: With Metroplex operational, autonomous patch application is handled by Metroplex Gate 3 (systemd service). The cron job above runs the Sky-Lynx analysis and patch generation loop independently.
 
 ## Project Structure
 
 ```
-st-factory/
+st-records/
 ├── contracts/                      # Pydantic v2 data contracts
 │   ├── outcome_record.py           # UM -> SL
 │   ├── improvement_recommendation.py  # SL -> Academy

@@ -24,7 +24,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from contracts.persona_upgrade_patch import PatchOperation, PersonaFieldPatch, PersonaUpgradePatch
 from contracts.store import ContractStore
 
-ACADEMY_PATH = Path.home() / "projects" / "agent-persona-academy"
+ACADEMY_PATH = Path.home() / "projects" / "st-agent-registry"
 PERSONAS_PATH = ACADEMY_PATH / "personas"
 
 

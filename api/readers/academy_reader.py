@@ -1,6 +1,6 @@
-"""Read persona YAML files from the Agent Persona Academy.
+"""Read persona YAML files from the ST Agent Registry.
 
-Walks ~/projects/agent-persona-academy/personas/*/persona.yaml and
+Walks ~/projects/st-agent-registry/personas/*/persona.yaml and
 returns AgentSummary / AgentDetail objects. Read-only — never modifies YAML.
 """
 
@@ -10,7 +10,7 @@ import yaml
 
 from api.models.responses import AgentDetail, AgentSummary
 
-DEFAULT_PERSONAS_DIR = Path.home() / "projects" / "agent-persona-academy" / "personas"
+DEFAULT_PERSONAS_DIR = Path.home() / "projects" / "st-agent-registry" / "personas"
 
 
 class AcademyReader:

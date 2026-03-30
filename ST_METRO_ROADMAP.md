@@ -12,7 +12,7 @@
 Research Agents (ArXiv API, GitHub API, HN Algolia + Claude relevance assessment)
     |
     v
-ST Factory ContractStore (ResearchSignals — JSONL + SQLite)
+ST Records ContractStore (ResearchSignals — JSONL + SQLite)
     |
     v
 idea_surfacer (Claude synthesis — signals → project ideas)
@@ -27,7 +27,7 @@ YCE Harness (autonomous build engine, multi-agent, parallel worktrees)
 Sky-Lynx (weekly analysis, CLAUDE.md recommendations)
     |
     v
-ST Factory (persona metrics, contract store, patch management)
+ST Records (persona metrics, contract store, patch management)
     |
     v
 Agent Persona Academy (persona YAMLs)
@@ -51,9 +51,9 @@ Metroplex (L5 autonomy coordinator — built, awaiting pipeline data)
 | Research Agents | `projects/research-agents/` | Built (dormant) | 4 agents: arxiv_scanner, tool_monitor, domain_watcher, idea_surfacer. Uses ArXiv/GitHub/HN APIs + Claude relevance. Cron not installed post-DR. |
 | Ultra-Magnus | `projects/ultra-magnus/` | Built | Idea capture, Gemini enrichment, Christensen evaluation, HIL review, scaffold, build, deploy |
 | YCE Harness | `projects/yce-harness/` | Built | Autonomous AI engineer — Orchestrator (Haiku) + specialist agents (Sonnet), parallel via worktrees |
-| Sky-Lynx | remote: `m2ai-portfolio/sky-lynx` | Built | Weekly cron analysis, reads usage + IdeaForge + ST Factory, recommends CLAUDE.md updates |
-| ST Factory | `projects/st-factory/` | Built | Persona metrics DB, contract store, patch management |
-| Agent Persona Academy | remote: `m2ai-portfolio/agent-persona-academy` | Built | Persona YAML definitions (may rebuild on Claude SDK) |
+| Sky-Lynx | remote: `m2ai-portfolio/sky-lynx` | Built | Weekly cron analysis, reads usage + IdeaForge + ST Records, recommends CLAUDE.md updates |
+| ST Records | `projects/st-records/` | Built | Persona metrics DB, contract store, patch management |
+| ST Agent Registry | remote: `m2ai-ultra-magnus-IF/st-agent-registry` | Built | Persona YAML definitions, department system, agent learning copies |
 | ClaudeClaw "Data" | `projects/claudeclaw/` | Built (Phase 7 in progress) | Telegram bot, Claude Code backend, multi-LLM routing, Arcade MCP |
 | Clawdbot "Chad" | External (GPT-5.2) | Running | Independent multi-agent system at `@m2ai_chad_bot` |
 | Metroplex | `projects/metroplex/` | Built (idle) | L5 autonomy coordinator — 3 gates (triage/build/patch), circuit breaker, systemd service. Awaiting pipeline data. |
@@ -76,7 +76,7 @@ The market tells the system what to build. No human required to identify opportu
 
 **2. Self-improvement driven (internal push)**
 ```
-Sky-Lynx (weekly analysis of Claude Code usage, IdeaForge DB, ST Factory metrics)
+Sky-Lynx (weekly analysis of Claude Code usage, IdeaForge DB, ST Records metrics)
     -> Recommended patches (CLAUDE.md updates, persona improvements)
     -> Metroplex priority queue
 ```
@@ -118,7 +118,7 @@ Human sets strategy, priorities, and constraints. Does not write or review code.
         └──────────────────┬──────────────────┘
                            |
                            v
-                    ST Factory (metrics)
+                    ST Records (metrics)
                            |
                            v
                     Sky-Lynx (observes)
@@ -144,7 +144,7 @@ Human sets strategy, priorities, and constraints. Does not write or review code.
 
 ### Phase 7: Activate the Pipeline — IN PROGRESS
 
-**Owner**: Research Agents + ST Factory
+**Owner**: Research Agents + ST Records
 **Goal**: Get signals flowing through the full pipeline so Metroplex has data to act on
 
 | Step | Description | Status |
@@ -152,12 +152,12 @@ Human sets strategy, priorities, and constraints. Does not write or review code.
 | 7a | Fix research-agents cron paths (`/home/ubuntu/` → `/home/apexaipc/`) | Done |
 | 7b | Verify `run-agents.sh` works in local environment — venv recreated, 28 tests passing | Done |
 | 7c | Dry-run all 4 agents — arxiv, tool-monitor, domain-watch all fetch data | Done |
-| 7d | Live run — 63 signals (18 arxiv, 20 tool, 25 domain) written to ST Factory | Done |
+| 7d | Live run — 63 signals (18 arxiv, 20 tool, 25 domain) written to ST Records | Done |
 | 7e | Verify idea_surfacer writes to Ultra-Magnus — 3 ideas synthesized into caught_ideas.db | Done |
 | 7f | Install cron on local machine | Done |
 | 7g | Verify Metroplex triage picks up scored ideas (requires UM scoring first) | Not started |
 
-**Exit criteria**: Research agents run on cron, signals flow into ST Factory, idea_surfacer produces ideas, Metroplex triage has data to approve/reject/defer.
+**Exit criteria**: Research agents run on cron, signals flow into ST Records, idea_surfacer produces ideas, Metroplex triage has data to approve/reject/defer.
 
 ---
 
@@ -206,7 +206,7 @@ Human sets strategy, priorities, and constraints. Does not write or review code.
 | Step | Description | Status |
 |------|-------------|--------|
 | 10a | Sky-Lynx writes improvement tasks to Linear (not just draft PRs) | Not started |
-| 10b | ST Factory metrics auto-generate persona patch tasks | Not started |
+| 10b | ST Records metrics auto-generate persona patch tasks | Not started |
 | 10c | Metroplex ingests improvement tasks alongside market tasks | Not started |
 | 10d | Validation gate — self-improvement changes must pass before merging | Not started |
 

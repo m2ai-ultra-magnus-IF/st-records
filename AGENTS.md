@@ -1,10 +1,10 @@
-# AGENTS.md - Snow-Town
+# AGENTS.md - ST Records
 
 ## Build & Run
 
 ```bash
 # Setup
-cd ~/projects/snow-town
+cd ~/projects/st-records
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev]"
@@ -35,7 +35,7 @@ python scripts/persona_upgrader.py --dry-run
 | `scripts/run_loop.sh` | Full feedback loop orchestrator |
 | `scripts/persona_upgrader.py` | Generates persona patches from recommendations |
 | `scripts/loop_status.py` | Reports loop health |
-| `cron/snow-town` | Cron configuration for weekly execution |
+| `cron/st-records` | Cron configuration for weekly execution |
 
 ## Environment Variables
 
@@ -48,4 +48,4 @@ python scripts/persona_upgrader.py --dry-run
 - Python 3.11+
 - Sky-Lynx (at `~/projects/sky-lynx/`)
 - Ultra Magnus (at `~/projects/ultra-magnus/`)
-- Agent Persona Academy (at `~/projects/agent-persona-academy/`)
+- ST Agent Registry (at `~/projects/st-agent-registry/`)

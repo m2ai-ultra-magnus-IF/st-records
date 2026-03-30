@@ -1,4 +1,4 @@
-# CLAUDE.md - Snow-Town
+# CLAUDE.md - ST Records
 
 ## Quick Commands
 
@@ -10,18 +10,18 @@ pytest tests/
 
 ## Project Purpose
 
-Snow-Town is the orchestration layer that closes the feedback loop between:
-1. **Ultra Magnus** - Idea pipeline (produces OutcomeRecords)
+ST Records is the orchestration layer that closes the feedback loop between:
+1. **Metroplex** - Idea pipeline (produces OutcomeRecords)
 2. **Sky-Lynx** - Observer (analyzes outcomes, produces ImprovementRecommendations)
-3. **Agent Persona Academy** - Factory (consumes recommendations, produces PersonaUpgradePatches)
+3. **ST Agent Registry** - Factory (consumes recommendations, produces PersonaUpgradePatches)
 
 ## Architecture
 
 ```
 contracts/              # Pydantic models defining inter-layer data contracts
-  outcome_record.py     # UM -> SL
+  outcome_record.py     # Metroplex -> SL
   improvement_recommendation.py  # SL -> Academy
-  persona_upgrade_patch.py       # Academy -> UM
+  persona_upgrade_patch.py       # Academy -> Metroplex
   store.py              # Dual-write JSONL + SQLite store
 schemas/                # JSON Schema exports for TypeScript consumers
 data/                   # JSONL data files (append-only, git-tracked)
@@ -39,7 +39,7 @@ tests/                  # Contract tests
 ## Data Flow
 
 ```
-UM terminal state -> OutcomeRecord -> JSONL
+Metroplex terminal state -> OutcomeRecord -> JSONL
 Sky-Lynx reads JSONL -> analyzes -> ImprovementRecommendation -> JSONL
 persona_upgrader reads JSONL -> generates patch -> PersonaUpgradePatch -> JSONL
 ```

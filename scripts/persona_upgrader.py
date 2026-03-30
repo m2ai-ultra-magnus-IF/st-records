@@ -49,7 +49,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Paths
-ACADEMY_PATH = Path.home() / "projects" / "agent-persona-academy"
+ACADEMY_PATH = Path.home() / "projects" / "st-agent-registry"
 PERSONAS_PATH = ACADEMY_PATH / "personas"
 SCHEMA_PATH = ACADEMY_PATH / "schema" / "persona-schema.json"
 

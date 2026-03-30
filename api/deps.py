@@ -13,14 +13,14 @@ from api.readers.academy_reader import AcademyReader
 from api.readers.um_reader import UMReader
 
 # Configurable paths with defaults matching EC2 layout
-SNOW_TOWN_DATA_DIR = Path(os.environ.get(
-    "SNOW_TOWN_DATA_DIR",
-    str(Path.home() / "projects" / "st-factory" / "data"),
+ST_RECORDS_DATA_DIR = Path(os.environ.get(
+    "ST_RECORDS_DATA_DIR",
+    str(Path.home() / "projects" / "st-records" / "data"),
 ))
 
 ACADEMY_PERSONAS_DIR = Path(os.environ.get(
     "ACADEMY_PERSONAS_DIR",
-    str(Path.home() / "projects" / "agent-persona-academy" / "personas"),
+    str(Path.home() / "projects" / "st-agent-registry" / "personas"),
 ))
 
 UM_DB_PATH = Path(os.environ.get(
@@ -37,7 +37,7 @@ _um: UMReader | None = None
 def get_store() -> ContractStore:
     global _store
     if _store is None:
-        _store = ContractStore(data_dir=SNOW_TOWN_DATA_DIR)
+        _store = ContractStore(data_dir=ST_RECORDS_DATA_DIR)
     return _store
 
 
