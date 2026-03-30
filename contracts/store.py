@@ -140,9 +140,24 @@ class ContractStore:
                 rationale TEXT,
                 status TEXT DEFAULT 'proposed',
                 emitted_at TEXT NOT NULL,
-                raw_json TEXT NOT NULL
+                raw_json TEXT NOT NULL,
+                effectiveness TEXT,
+                effectiveness_score REAL,
+                effectiveness_evaluated_at TEXT
             );
         """)
+        # Migration: add effectiveness columns to agent_patches if missing
+        for col, col_type in [
+            ("effectiveness", "TEXT"),
+            ("effectiveness_score", "REAL"),
+            ("effectiveness_evaluated_at", "TEXT"),
+        ]:
+            try:
+                conn.execute(
+                    f"ALTER TABLE agent_patches ADD COLUMN {col} {col_type}"
+                )
+            except sqlite3.OperationalError:
+                pass  # Column already exists
         conn.commit()
 
     def _jsonl_path(self, contract_type: str) -> Path:
@@ -536,6 +551,64 @@ class ContractStore:
             (status, patch_id),
         )
         conn.commit()
+
+    def update_agent_patch_effectiveness(
+        self,
+        patch_id: str,
+        effectiveness: str,
+        effectiveness_score: float,
+        evaluated_at: str,
+    ) -> None:
+        """Record effectiveness evaluation for an agent patch."""
+        conn = self._get_conn()
+        conn.execute(
+            """UPDATE agent_patches
+            SET effectiveness = ?, effectiveness_score = ?, effectiveness_evaluated_at = ?
+            WHERE patch_id = ?""",
+            (effectiveness, effectiveness_score, evaluated_at, patch_id),
+        )
+        conn.commit()
+
+    def get_applied_agent_patches_for_evaluation(self) -> list[dict]:
+        """Get applied agent patches that haven't been evaluated yet."""
+        conn = self._get_conn()
+        rows = conn.execute(
+            """SELECT patch_id, agent_id, target, section, operation,
+                      rationale, status, emitted_at, raw_json
+            FROM agent_patches
+            WHERE status = 'applied' AND effectiveness IS NULL
+            ORDER BY emitted_at ASC"""
+        ).fetchall()
+        return [dict(row) for row in rows]
+
+    def get_agent_effectiveness_summary(self) -> dict:
+        """Get summary of agent patch effectiveness evaluations."""
+        conn = self._get_conn()
+        rows = conn.execute(
+            """SELECT effectiveness, COUNT(*) as count,
+                      AVG(effectiveness_score) as avg_score
+            FROM agent_patches
+            WHERE effectiveness IS NOT NULL
+            GROUP BY effectiveness"""
+        ).fetchall()
+        return {
+            row["effectiveness"]: {"count": row["count"], "avg_score": row["avg_score"]}
+            for row in rows
+        }
+
+    def get_recent_agent_patches_with_scores(self, limit: int = 20) -> list[dict]:
+        """Get recent agent patches with effectiveness scores for digest."""
+        conn = self._get_conn()
+        rows = conn.execute(
+            """SELECT patch_id, agent_id, target, section, operation,
+                      rationale, status, effectiveness, effectiveness_score,
+                      effectiveness_evaluated_at, emitted_at
+            FROM agent_patches
+            ORDER BY emitted_at DESC
+            LIMIT ?""",
+            (limit,),
+        ).fetchall()
+        return [dict(row) for row in rows]
 
     # --- ResearchSignal ---
 
