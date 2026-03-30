@@ -1,5 +1,5 @@
 #!/bin/bash
-# Snow-Town Feedback Loop Orchestration
+# ST Records Feedback Loop Orchestration
 #
 # Runs the full feedback cycle:
 # 1. Sky-Lynx analyzes outcomes + usage data
@@ -29,7 +29,7 @@ if [[ "${1:-}" == "--dry-run" ]]; then
 fi
 
 echo "============================================================"
-echo "  Snow-Town Feedback Loop"
+echo "  ST Records Feedback Loop"
 echo "  $(date '+%Y-%m-%d %H:%M:%S')"
 echo "============================================================"
 
@@ -57,4 +57,4 @@ echo "------------------------------------------------------------"
 python scripts/loop_status.py
 
 echo ""
-echo "Snow-Town feedback loop complete at $(date '+%Y-%m-%d %H:%M:%S')"
+echo "ST Records feedback loop complete at $(date '+%Y-%m-%d %H:%M:%S')"

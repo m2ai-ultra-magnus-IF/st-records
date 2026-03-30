@@ -12,7 +12,7 @@ The ST Metro pipeline has a disconnected seam:
 
 ```
 ACTUAL (broken):
-  Research Agents → ST Factory ContractStore (signals)
+  Research Agents → ST Records ContractStore (signals)
   Idea Surfacer   → Ultra-Magnus caught_ideas.db (ideas)
   IdeaForge       → harvests HN only → empty DB
   Metroplex       → reads IdeaForge → finds nothing
@@ -41,7 +41,7 @@ Idea Surfacer ─────────┘         |
                           Linear issue (via Arcade) → YCE Harness build
 ```
 
-Research agents continue writing raw signals to ST Factory ContractStore (Sky-Lynx reads those). Only the idea-surfacer's output destination changes.
+Research agents continue writing raw signals to ST Records ContractStore (Sky-Lynx reads those). Only the idea-surfacer's output destination changes.
 
 ---
 
@@ -76,7 +76,7 @@ now()           → synthesized_at
 ```
 
 **Key constraint**: IdeaForge's `insert_idea()` in `db.py` expects an `Idea` Pydantic model. The writer can either:
-- Import and use IdeaForge's models directly (adds cross-project dependency via sys.path, same pattern as ST Factory)
+- Import and use IdeaForge's models directly (adds cross-project dependency via sys.path, same pattern as ST Records)
 - Do raw SQL INSERT (simpler, no import dependency)
 
 **Recommendation**: Raw SQL INSERT. Keeps research-agents decoupled. Same pattern already used for Ultra-Magnus writes.
@@ -141,11 +141,11 @@ Note: idea-surfacer runs Saturday 11 PM. Its ideas won't be scored until the nex
 
 ## What NOT to Change
 
-- **ST Factory ContractStore**: Research agents still write raw signals here. Sky-Lynx reads them. Don't touch this.
+- **ST Records ContractStore**: Research agents still write raw signals here. Sky-Lynx reads them. Don't touch this.
 - **Metroplex readers**: Already reads IdeaForge. No change needed.
 - **IdeaForge scorer/classifier**: Already processes unscored ideas. No change needed.
 - **IdeaForge HN harvester**: Stays as-is. It's one signal source among potentially many.
-- **Research agents (arxiv, tool-monitor, domain-watch)**: These write signals to ST Factory. No change — only idea-surfacer output changes.
+- **Research agents (arxiv, tool-monitor, domain-watch)**: These write signals to ST Records. No change — only idea-surfacer output changes.
 
 ## Risks
 

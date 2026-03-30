@@ -256,7 +256,7 @@
         },
         "analytics": {
           "type": "object",
-          "description": "For measurement/analysis services (Sky-Lynx, st-factory).",
+          "description": "For measurement/analysis services (Sky-Lynx, st-records).",
           "properties": {
             "data_sources": {
               "type": "array",

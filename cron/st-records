@@ -1,0 +1,14 @@
+# ST Records Feedback Loop
+# Replaces the previous Sky-Lynx-only cron
+# Install: sudo cp /home/apexaipc/projects/st-records/cron/st-records /etc/cron.d/
+# Verify: sudo systemctl restart cron && sudo tail -f /var/log/syslog | grep CRON
+
+# Environment
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+# Create log directory if needed
+# sudo mkdir -p /var/log/st-records && sudo chown apexaipc:apexaipc /var/log/st-records
+
+# Run weekly on Sundays at 2 AM
+0 2 * * 0 apexaipc /home/apexaipc/projects/st-records/scripts/run_loop.sh >> /var/log/st-records/loop.log 2>&1

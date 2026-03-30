@@ -1,9 +1,9 @@
-/var/log/st-factory/loop.log {
+/var/log/st-records/loop.log {
     weekly
     rotate 12
     compress
     delaycompress
     missingok
     notifempty
-    create 644 ubuntu ubuntu
+    create 644 apexaipc apexaipc
 }

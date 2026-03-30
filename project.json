@@ -1,17 +1,17 @@
 {
   "schema_version": "1.0.0",
-  "name": "st-factory",
-  "display_name": "ST Factory",
+  "name": "st-records",
+  "display_name": "ST Records",
   "status": "active",
   "purpose": "Contract store, persona metrics DB, and patch management for the Snow-Town feedback loop. Defines the Pydantic data contracts that all ST Metro services use to communicate, and hosts the schemas that validate inter-service messages.",
   "owner": "matthew",
   "repo": {
     "org": "m2ai-portfolio",
-    "name": "st-factory",
+    "name": "st-records",
     "default_branch": "master",
     "visibility": "private"
   },
-  "local_path": "/home/apexaipc/projects/st-factory",
+  "local_path": "/home/apexaipc/projects/st-records",
   "tech_stack": {
     "languages": [
       "python"

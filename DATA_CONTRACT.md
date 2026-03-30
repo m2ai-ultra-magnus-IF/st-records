@@ -1,6 +1,6 @@
-# ST Factory Data Contract
+# ST Records Data Contract
 
-Stable interface for all systems that read from or write to ST Factory's data stores. ST Factory uses a dual-write architecture: **JSONL files are source of truth** (append-only, git-tracked), **SQLite is the query layer** (status updates, indexed queries, rebuildable).
+Stable interface for all systems that read from or write to ST Records' data stores. ST Records uses a dual-write architecture: **JSONL files are source of truth** (append-only, git-tracked), **SQLite is the query layer** (status updates, indexed queries, rebuildable).
 
 ## Database: `data/persona_metrics.db`
 
@@ -143,7 +143,7 @@ No mutable status — `consumed_by` tracks downstream consumption.
 
 ## Reader Contracts
 
-### Metroplex (`readers/stfactory_reader.py`)
+### Metroplex (`readers/st_records_reader.py`)
 
 **Reads:** `persona_patches` table (opens with `?mode=ro`). Retrieves patches with `status='proposed'` for Gate 3.
 
@@ -183,19 +183,19 @@ No mutable status — `consumed_by` tracks downstream consumption.
 
 ## Importing Contracts
 
-ST Factory contracts are imported via `sys.path` injection, not pip:
+ST Records contracts are imported via `sys.path` injection, not pip:
 
 ```python
 import sys
-sys.path.insert(0, os.path.expanduser("~/projects/st-factory"))
+sys.path.insert(0, os.path.expanduser("~/projects/st-records"))
 from contracts.outcome_record import OutcomeRecord
 from contracts.store import ContractStore
 ```
 
 ## Environment Variables
 
-- `SNOW_TOWN_DATA_DIR` (default: `~/projects/st-factory/data`) — JSONL + SQLite directory
-- `STFACTORY_DB_PATH` (default: `~/projects/st-factory/data/persona_metrics.db`)
+- `ST_RECORDS_DATA_DIR` (default: `~/projects/st-records/data`) — JSONL + SQLite directory
+- `ST_RECORDS_DB_PATH` (default: `~/projects/st-records/data/persona_metrics.db`)
 
 ## Stability Guarantees
 
