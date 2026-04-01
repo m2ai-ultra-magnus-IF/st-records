@@ -3,8 +3,7 @@
 #
 # Runs the full feedback cycle:
 # 1. Sky-Lynx analyzes outcomes + usage data
-# 2. Persona upgrader processes new recommendations
-# 3. Report loop status
+# 2. Report loop status
 #
 # Usage:
 #   ./scripts/run_loop.sh              # Full loop
@@ -42,18 +41,12 @@ source .venv/bin/activate
 python -m sky_lynx.analyzer --no-pr $DRY_RUN
 deactivate 2>/dev/null || true
 
-# Step 2: Run persona upgrader
+# Step 2: Report status
 echo ""
-echo ">>> Step 2: Persona Upgrade Engine"
+echo ">>> Step 2: Loop Status"
 echo "------------------------------------------------------------"
 cd "$SNOW_TOWN_DIR"
 source .venv/bin/activate
-python scripts/persona_upgrader.py --auto-apply $DRY_RUN
-
-# Step 3: Report status
-echo ""
-echo ">>> Step 3: Loop Status"
-echo "------------------------------------------------------------"
 python scripts/loop_status.py
 
 echo ""
