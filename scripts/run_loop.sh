@@ -48,7 +48,7 @@ echo ">>> Step 2: Persona Upgrade Engine"
 echo "------------------------------------------------------------"
 cd "$SNOW_TOWN_DIR"
 source .venv/bin/activate
-python scripts/persona_upgrader.py $DRY_RUN
+python scripts/persona_upgrader.py --auto-apply $DRY_RUN
 
 # Step 3: Report status
 echo ""
