@@ -48,7 +48,7 @@ REGISTRY_PATH = Path.home() / "projects" / "st-agent-registry"
 AGENTS_PATH = REGISTRY_PATH / "agents"
 
 # Claude model for patch generation
-PATCH_MODEL = "claude-sonnet-4-20250514"
+PATCH_MODEL = "claude-sonnet-4-6"
 
 # Auto-approve criteria: high-confidence, low-risk agent patches
 # skip HIL review and go straight to "approved" for Gate 3 pickup

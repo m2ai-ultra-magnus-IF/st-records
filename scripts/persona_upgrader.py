@@ -54,7 +54,7 @@ PERSONAS_PATH = ACADEMY_PATH / "personas"
 SCHEMA_PATH = ACADEMY_PATH / "schema" / "persona-schema.json"
 
 # Claude model for patch generation
-PATCH_MODEL = "claude-sonnet-4-20250514"
+PATCH_MODEL = "claude-sonnet-4-6"
 
 PATCH_PROMPT = """You are a persona engineering expert. Given a recommendation for improving
 an AI persona and the current persona YAML, generate a minimal set of changes.
