@@ -53,7 +53,7 @@ Metroplex (L5 autonomy coordinator — built, awaiting pipeline data)
 | YCE Harness | `projects/yce-harness/` | Built | Autonomous AI engineer — Orchestrator (Haiku) + specialist agents (Sonnet), parallel via worktrees |
 | Sky-Lynx | remote: `m2ai-portfolio/sky-lynx` | Built | Weekly cron analysis, reads usage + IdeaForge + ST Records, recommends CLAUDE.md updates |
 | ST Records | `projects/st-records/` | Built | Persona metrics DB, contract store, patch management |
-| ST Agent Registry | remote: `m2ai-ultra-magnus-IF/st-agent-registry` | Built | Persona YAML definitions, department system, agent learning copies |
+| ST Agent Registry | remote: `m2ai-st-metro/st-agent-registry` | Built | Persona YAML definitions, department system, agent learning copies |
 | ClaudeClaw "Data" | `projects/claudeclaw/` | Built (Phase 7 in progress) | Telegram bot, Claude Code backend, multi-LLM routing, Arcade MCP |
 | Clawdbot "Chad" | External (GPT-5.2) | Running | Independent multi-agent system at `@m2ai_chad_bot` |
 | Metroplex | `projects/metroplex/` | Built (idle) | L5 autonomy coordinator — 3 gates (triage/build/patch), circuit breaker, systemd service. Awaiting pipeline data. |
